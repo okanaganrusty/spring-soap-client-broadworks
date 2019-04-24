@@ -1,0 +1,104 @@
+<wsdl:definitions xmlns:apachesoap="http://xml.apache.org/xml-soap"
+									xmlns:impl="urn:com:broadsoft:webservice"
+									xmlns:intf="urn:com:broadsoft:webservice"
+									xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+									xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+									xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+									targetNamespace="urn:com:broadsoft:webservice">
+  <!--
+			WSDL created by Apache Axis2 version
+			Built on Apr 22, 2006 (06:55:48 PDT)
+	-->
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema"
+						elementFormDefault="qualified"
+						targetNamespace="urn:com:broadsoft:webservice">
+			<element name="processMessage">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="processMessageResponse">
+				<complexType>
+					<sequence>
+						<element name="processMessageReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="processOCIMessage">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="processOCIMessageResponse">
+				<complexType>
+					<sequence>
+						<element name="processOCIMessageReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+    </schema>
+  </wsdl:types>
+	
+  <wsdl:message name="processMessageResponse">
+    <wsdl:part element="impl:processMessageResponse" name="parameters" />
+  </wsdl:message>
+  <wsdl:message name="processOCIMessageResponse">
+    <wsdl:part element="impl:processOCIMessageResponse" name="parameters" />
+  </wsdl:message>
+  <wsdl:message name="processMessageRequest">
+    <wsdl:part element="impl:processMessage" name="parameters" />
+  </wsdl:message>
+  <wsdl:message name="processOCIMessageRequest">
+    <wsdl:part element="impl:processOCIMessage" name="parameters" />
+  </wsdl:message>
+  <wsdl:portType name="BWProvisioningService">
+    <wsdl:operation name="processMessage">
+      <wsdl:input message="impl:processMessageRequest"
+									name="processMessageRequest" />
+      <wsdl:output message="impl:processMessageResponse"
+									 name="processMessageResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="processOCIMessage">
+      <wsdl:input message="impl:processOCIMessageRequest"
+									name="processOCIMessageRequest" />
+      <wsdl:output message="impl:processOCIMessageResponse"
+									 name="processOCIMessageResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProvisioningServiceSoapBinding"
+								type="impl:BWProvisioningService">
+    <wsdlsoap:binding style="document"
+											transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="processMessage">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="processMessageRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="processMessageResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="processOCIMessage">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="processOCIMessageRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="processOCIMessageResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BWProvisioningServiceService">
+    <wsdl:port binding="impl:ProvisioningServiceSoapBinding"
+							 name="ProvisioningService">
+      <wsdlsoap:address
+        location="https://localhost/webservice/services/ProvisioningService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
+
