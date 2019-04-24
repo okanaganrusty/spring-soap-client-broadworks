@@ -22,15 +22,15 @@ public class WsdlConfiguration {
 				com.broadsoft.broadworks.webservice.ProcessOCIMessageResponse.class });
 
 		wsdlMarshaller.setMarshallerProperties(new HashMap<String, Object>() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-			{
-				put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			}
-		});
+				{
+					put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
+				}
+			});
 
 		return wsdlMarshaller;
 	}

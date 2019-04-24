@@ -16,8 +16,9 @@ public class WsdlClient extends WebServiceGatewaySupport {
 		ProcessOCIMessage request = new ProcessOCIMessage();
 		request.setIn0(xmlPayload);
 
-		ProcessOCIMessageResponse response = (ProcessOCIMessageResponse) getWebServiceTemplate()
-				.marshalSendAndReceive(this.wsdlLocation, request, new SoapActionCallback(this.wsdlLocation));
+		ProcessOCIMessageResponse response = (ProcessOCIMessageResponse)
+			getWebServiceTemplate()
+			.marshalSendAndReceive(this.wsdlLocation, request, new SoapActionCallback(this.wsdlLocation));
 		
 		return response;
 	}

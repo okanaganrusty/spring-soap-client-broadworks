@@ -28,94 +28,94 @@ import io.okanaganrusty.broadworks.xsd.XsdConfiguration;
 
 @Component
 public class AuthenticationService {
-		private static final Logger log = LoggerFactory.getLogger(Application.class);
-		private static final String USERNAME = "foobar";
-		private static final String PASSWORD = "foobar";
+	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	private static final String USERNAME = "foobar";
+	private static final String PASSWORD = "foobar";
 		
-		@Autowired
-		private XsdConfiguration xsdConfiguration;
+	@Autowired
+	private XsdConfiguration xsdConfiguration;
 		
-		@SuppressWarnings("unchecked")
-		@Bean
-		CommandLineRunner authenticate(WsdlClient wsdlClient) {
-				return args -> {
-					try {
-						ObjectFactory xsdObjectFactory = new ObjectFactory();
+	@SuppressWarnings("unchecked")
+	@Bean
+	CommandLineRunner authenticate(WsdlClient wsdlClient) {
+		return args -> {
+			try {
+				ObjectFactory xsdObjectFactory = new ObjectFactory();
 
-						/*
-						 * Construct authentication request
-						 */
+				/*
+				 * Construct authentication request
+				 */
 
-						Random randomGenerator = new Random();
+				Random randomGenerator = new Random();
 
-						AuthenticationRequest authRequest = xsdObjectFactory.createAuthenticationRequest();
+				AuthenticationRequest authRequest = xsdObjectFactory.createAuthenticationRequest();
 
-						authRequest.setEcho("");
-						authRequest.setUserId(USERNAME);
+				authRequest.setEcho("");
+				authRequest.setUserId(USERNAME);
 
-						StringWriter sessionIdWriter = new StringWriter();
-						sessionIdWriter.append(InetAddress.getLocalHost().getHostAddress());
-						sessionIdWriter.append(",");
-						sessionIdWriter.append(String.valueOf(randomGenerator.nextInt(999999999)));
+				StringWriter sessionIdWriter = new StringWriter();
+				sessionIdWriter.append(InetAddress.getLocalHost().getHostAddress());
+				sessionIdWriter.append(",");
+				sessionIdWriter.append(String.valueOf(randomGenerator.nextInt(999999999)));
 
-						OCIMessage ociMessage = new OCIMessage();
-						ociMessage.setProtocol("OCI");
-						ociMessage.setSessionId(sessionIdWriter.toString());
-						ociMessage.getCommand().add(authRequest);
+				OCIMessage ociMessage = new OCIMessage();
+				ociMessage.setProtocol("OCI");
+				ociMessage.setSessionId(sessionIdWriter.toString());
+				ociMessage.getCommand().add(authRequest);
 
-						JAXBElement<OCIMessage> bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory
-								.createBroadsoftDocument(ociMessage);
+				JAXBElement<OCIMessage> bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory
+					.createBroadsoftDocument(ociMessage);
 
-						StringResult result = new StringResult();
-						xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
+				StringResult result = new StringResult();
+				xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
 
-						ProcessOCIMessageResponse response = wsdlClient.getResponse(result.toString());
-						log.debug(response.getProcessOCIMessageReturn());
+				ProcessOCIMessageResponse response = wsdlClient.getResponse(result.toString());
+				log.debug(response.getProcessOCIMessageReturn());
 
-						JAXBElement<OCIMessage> jaxbUnmarshallResponse = (JAXBElement<OCIMessage>) xsdConfiguration.xsdMarshaller()
-								.unmarshal(new StringSource(response.getProcessOCIMessageReturn()));
+				JAXBElement<OCIMessage> jaxbUnmarshallResponse = (JAXBElement<OCIMessage>) xsdConfiguration.xsdMarshaller()
+					.unmarshal(new StringSource(response.getProcessOCIMessageReturn()));
 
-						OCIMessage ociMessageResponse = jaxbUnmarshallResponse.getValue();
+				OCIMessage ociMessageResponse = jaxbUnmarshallResponse.getValue();
 
-						// Get the first message in the response (you can have multiple responses based
-						// on the number of
-						// commands you send in your request.
+				// Get the first message in the response (you can have multiple responses based
+				// on the number of
+				// commands you send in your request.
 
-						AuthenticationResponse authResponse = (AuthenticationResponse) ociMessageResponse.getCommand().get(0);
+				AuthenticationResponse authResponse = (AuthenticationResponse) ociMessageResponse.getCommand().get(0);
 
-						/*
-						 * Construct login request
-						 */
+				/*
+				 * Construct login request
+				 */
 
-						String password = DigestUtils.sha1Hex(PASSWORD);
+				String password = DigestUtils.sha1Hex(PASSWORD);
 
-						StringWriter passwordWithNonce = new StringWriter();
-						passwordWithNonce.append(authResponse.getNonce());
-						passwordWithNonce.append(":");
-						passwordWithNonce.append(password);
+				StringWriter passwordWithNonce = new StringWriter();
+				passwordWithNonce.append(authResponse.getNonce());
+				passwordWithNonce.append(":");
+				passwordWithNonce.append(password);
 
-						String passwordHash = DigestUtils.md5Hex(passwordWithNonce.toString());
+				String passwordHash = DigestUtils.md5Hex(passwordWithNonce.toString());
 
-						LoginRequest22 loginRequest22 = xsdObjectFactory.createLoginRequest22();
+				LoginRequest22 loginRequest22 = xsdObjectFactory.createLoginRequest22();
 
-						loginRequest22.setEcho("");
-						loginRequest22.setUserId(USERNAME);
-						loginRequest22.setPassword(passwordHash);
+				loginRequest22.setEcho("");
+				loginRequest22.setUserId(USERNAME);
+				loginRequest22.setPassword(passwordHash);
 
-						ociMessage.getCommand().clear();
-						ociMessage.getCommand().add(loginRequest22);
+				ociMessage.getCommand().clear();
+				ociMessage.getCommand().add(loginRequest22);
 
-						bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory.createBroadsoftDocument(ociMessage);
+				bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory.createBroadsoftDocument(ociMessage);
 
-						result = new StringResult();
-						xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
+				result = new StringResult();
+				xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
 
-						response = wsdlClient.getResponse(result.toString());
-						log.debug(response.getProcessOCIMessageReturn());
+				response = wsdlClient.getResponse(result.toString());
+				log.debug(response.getProcessOCIMessageReturn());
 						
-					} catch (Exception ex) { 
+			} catch (Exception ex) { 
 						
-					}
-				};
-		}
+			}
+		};
+	}
 }
