@@ -8,18 +8,18 @@ import com.broadsoft.broadworks.webservice.ProcessOCIMessage;
 import com.broadsoft.broadworks.webservice.ProcessOCIMessageResponse;
 
 public class WsdlClient extends WebServiceGatewaySupport {	
-	@Value("${broadworks.wsdl.location}")
-	private String wsdlLocation;
+    @Value("${broadworks.wsdl.location}")
+    private String wsdlLocation;
+    
+    public ProcessOCIMessageResponse getResponse(String xmlPayload) {
 	
-	public ProcessOCIMessageResponse getResponse(String xmlPayload) {
-
-		ProcessOCIMessage request = new ProcessOCIMessage();
-		request.setIn0(xmlPayload);
-
-		ProcessOCIMessageResponse response = (ProcessOCIMessageResponse)
-			getWebServiceTemplate()
-			.marshalSendAndReceive(this.wsdlLocation, request, new SoapActionCallback(this.wsdlLocation));
-		
-		return response;
-	}
+	ProcessOCIMessage request = new ProcessOCIMessage();
+	request.setIn0(xmlPayload);
+	
+	ProcessOCIMessageResponse response = (ProcessOCIMessageResponse)
+	    getWebServiceTemplate()
+	    .marshalSendAndReceive(this.wsdlLocation, request, new SoapActionCallback(this.wsdlLocation));
+	
+	return response;
+    }
 }

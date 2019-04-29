@@ -26,61 +26,61 @@ import io.okanaganrusty.broadworks.xsd.XsdConfiguration;
 
 @Component
 public class SystemLanguageService {
-	private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 		
-	@Autowired
-	private XsdConfiguration xsdConfiguration;
+    @Autowired
+    private XsdConfiguration xsdConfiguration;
 		
-	@SuppressWarnings({ "unchecked", "unused" })
-	@Bean
-	CommandLineRunner getLanguages(WsdlClient wsdlClient) {
-		return args -> {
-			try {
-				ObjectFactory xsdObjectFactory = new ObjectFactory();
+    @SuppressWarnings({ "unchecked", "unused" })
+    @Bean
+    CommandLineRunner getLanguages(WsdlClient wsdlClient) {
+	return args -> {
+	    try {
+		ObjectFactory xsdObjectFactory = new ObjectFactory();
 
-				/*
-				 * Construct authentication request
-				 */
+		/*
+		 * Construct authentication request
+		 */
 
-				Random randomGenerator = new Random();
+		Random randomGenerator = new Random();
 
-				SystemLanguageGetListRequest systemLanguageGetRequest = xsdObjectFactory.createSystemLanguageGetListRequest();
-				systemLanguageGetRequest.setEcho("");
+		SystemLanguageGetListRequest systemLanguageGetRequest = xsdObjectFactory.createSystemLanguageGetListRequest();
+		systemLanguageGetRequest.setEcho("");
 
-				StringWriter sessionIdWriter = new StringWriter();
-				sessionIdWriter.append(InetAddress.getLocalHost().getHostAddress());
-				sessionIdWriter.append(",");
-				sessionIdWriter.append(String.valueOf(randomGenerator.nextInt(999999999)));
+		StringWriter sessionIdWriter = new StringWriter();
+		sessionIdWriter.append(InetAddress.getLocalHost().getHostAddress());
+		sessionIdWriter.append(",");
+		sessionIdWriter.append(String.valueOf(randomGenerator.nextInt(999999999)));
 
-				OCIMessage ociMessage = new OCIMessage();
-				ociMessage.setProtocol("OCI");
-				ociMessage.setSessionId(sessionIdWriter.toString());
-				ociMessage.getCommand().add(systemLanguageGetRequest);
+		OCIMessage ociMessage = new OCIMessage();
+		ociMessage.setProtocol("OCI");
+		ociMessage.setSessionId(sessionIdWriter.toString());
+		ociMessage.getCommand().add(systemLanguageGetRequest);
 
-				JAXBElement<OCIMessage> bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory
-					.createBroadsoftDocument(ociMessage);
+		JAXBElement<OCIMessage> bsDocument = (JAXBElement<OCIMessage>) xsdObjectFactory
+		    .createBroadsoftDocument(ociMessage);
 
-				StringResult result = new StringResult();
-				xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
+		StringResult result = new StringResult();
+		xsdConfiguration.xsdMarshaller().marshal(bsDocument, result);
 
-				ProcessOCIMessageResponse response = wsdlClient.getResponse(result.toString());
-				log.debug(response.getProcessOCIMessageReturn());
+		ProcessOCIMessageResponse response = wsdlClient.getResponse(result.toString());
+		log.debug(response.getProcessOCIMessageReturn());
 
-				JAXBElement<OCIMessage> jaxbUnmarshallResponse = (JAXBElement<OCIMessage>) xsdConfiguration.xsdMarshaller()
-					.unmarshal(new StringSource(response.getProcessOCIMessageReturn()));
+		JAXBElement<OCIMessage> jaxbUnmarshallResponse = (JAXBElement<OCIMessage>) xsdConfiguration.xsdMarshaller()
+		    .unmarshal(new StringSource(response.getProcessOCIMessageReturn()));
 
-				OCIMessage ociMessageResponse = jaxbUnmarshallResponse.getValue();
+		OCIMessage ociMessageResponse = jaxbUnmarshallResponse.getValue();
 
-				// Get the first message in the response (you can have multiple responses based
-				// on the number of
-				// commands you send in your request.
+		// Get the first message in the response (you can have multiple responses based
+		// on the number of
+		// commands you send in your request.
 
-				SystemLanguageGetListResponse systemLanguageGetResponse = 
-					(SystemLanguageGetListResponse) ociMessageResponse.getCommand().get(0);
+		SystemLanguageGetListResponse systemLanguageGetResponse = 
+		    (SystemLanguageGetListResponse) ociMessageResponse.getCommand().get(0);
 						
-			} catch (Exception ex) { 
+	    } catch (Exception ex) { 
 						
-			}
-		};
-	}
+	    }
+	};
+    }
 }

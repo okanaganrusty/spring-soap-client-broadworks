@@ -1,189 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.4.RELEASE</version>
+    <relativePath /> <!-- lookup parent from repository -->
+  </parent>
+  
+  <groupId>io.okanaganrusty</groupId>
+  <artifactId>demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>demo</name>
+  <description>Demo project for Spring Boot</description>
 
-	<modelVersion>4.0.0</modelVersion>
+  <properties>
+    <java.version>11</java.version>
+    <xsd.location.target>src/main/resources/xsd</xsd.location.target>
+    <wsdl.location.target>src/main/resources/webservice.wsdl</wsdl.location.target>
+  </properties>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+  <dependencies>
+    <!-- web service gateway support -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web-services</artifactId>
+    </dependency>
 
-	<groupId>io.okanaganrusty</groupId>
-	<artifactId>demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+    </dependency>
 
-	<properties>
-		<java.version>11</java.version>
-		<xsd.location.target>src/main/resources/xsd</xsd.location.target>
-		<wsdl.location.target>src/main/resources/webservice.wsdl</wsdl.location.target>
-	</properties>
+    <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
 
-	<dependencies>
-		<!-- web service gateway support -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web-services</artifactId>
-		</dependency>
+    <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-		</dependency>
+    <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1</version>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-		<dependency>
-		    <groupId>commons-codec</groupId>
-		    <artifactId>commons-codec</artifactId>
-		</dependency>
+    <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+  </dependencies>
 
-		<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1</version>
-		</dependency>
+  <profiles>
+    <profile>
+      <id>GENERATE-RESOURCES</id>
+      <build>
+	<plugins>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-antrun-plugin</artifactId>
+	    <executions>
+	      <execution>
+		<id>create-folders</id>
+		<phase>generate-sources</phase>
+		<goals>
+		  <goal>run</goal>
+		</goals>
+		<configuration>
+		  <tasks>
+		    <mkdir dir="target/generated-sources/wsdl" />
+		    <mkdir dir="target/generated-sources/xsd" />
+		  </tasks>
+		</configuration>
+	      </execution>
+	    </executions>
+	  </plugin>
 
-		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
-		<dependency>
-			<groupId>org.glassfish.jaxb</groupId>
-			<artifactId>jaxb-runtime</artifactId>
-		</dependency>
+	  <plugin>
+	    <groupId>org.codehaus.mojo</groupId>
+	    <artifactId>exec-maven-plugin</artifactId>
+	    <executions>
+	      <execution>
+		<id>wsdl</id>
+		<phase>generate-sources</phase>
+		<goals>
+		  <goal>exec</goal>
+		</goals>
+		<configuration>
+		  <executable>xjc</executable>
+		  <longModulepath>false</longModulepath>
+		  <arguments>
+		    <argument>-wsdl</argument>
+		    <argument>-p</argument>
+		    <argument>com.broadsoft.broadworks.webservice</argument>
+		    <argument>${wsdl.location.target}</argument>
+		    <argument>-d</argument>
+		    <argument>target/generated-sources/wsdl</argument>
+		  </arguments>
+		</configuration>
+	      </execution>
+	      <execution>
+		<id>xsd</id>
+		<phase>generate-sources</phase>
+		<goals>
+		  <goal>exec</goal>
+		</goals>
+		<configuration>
+		  <executable>xjc</executable>
+		  <longModulepath>false</longModulepath>
+		  <arguments>
+		    <argument>-extension</argument>
+		    <argument>-p</argument>
+		    <argument>com.broadsoft.broadworks.schema</argument>
+		    <argument>-d</argument>
+		    <argument>target/generated-sources/xsd</argument>
+		    <argument>${xsd.location.target}</argument>
+		  </arguments>
+		</configuration>
+	      </execution>
+	    </executions>
+	  </plugin>
 
-		<dependency>
-	        <groupId>org.apache.httpcomponents</groupId>
-	        <artifactId>httpclient</artifactId>
-	        <scope>compile</scope>
-	    </dependency>
-    		
-	</dependencies>
+	</plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<profiles>
-		<profile>
-			<id>GENERATE-RESOURCES</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>create-folders</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<mkdir dir="target/generated-sources/wsdl" />
-										<mkdir dir="target/generated-sources/xsd" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>build-helper-maven-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>add-source</id>
+	    <phase>generate-sources</phase>
+	    <goals>
+	      <goal>add-source</goal>
+	    </goals>
+	    <configuration>
+	      <sources>
+		<source>${basedir}/target/generated-sources/wsdl</source>
+		<source>${basedir}/target/generated-sources/xsd</source>
+	      </sources>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      
+      <plugin>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>wsdl</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-								<configuration>
-									<executable>xjc</executable>
-									<longModulepath>false</longModulepath>
-									<arguments>
-										<argument>-wsdl</argument>
-										<argument>-p</argument>
-										<argument>com.broadsoft.broadworks.webservice</argument>
-										<argument>${wsdl.location.target}</argument>
-										<argument>-d</argument>
-										<argument>target/generated-sources/wsdl</argument>
-									</arguments>
-								</configuration>
-							</execution>
-							<execution>
-								<id>xsd</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-								<configuration>
-									<executable>xjc</executable>
-									<longModulepath>false</longModulepath>
-									<arguments>
-										<argument>-extension</argument>
-										<argument>-p</argument>
-										<argument>com.broadsoft.broadworks.schema</argument>
-										<argument>-d</argument>
-										<argument>target/generated-sources/xsd</argument>
-										<argument>${xsd.location.target}</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/target/generated-sources/wsdl</source>
-								<source>${basedir}/target/generated-sources/xsd</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-	</repositories>
-
+  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+    </repository>
+  </repositories>
 </project>

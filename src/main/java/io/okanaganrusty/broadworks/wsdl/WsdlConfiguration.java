@@ -9,31 +9,31 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
  
 @Configuration
 public class WsdlConfiguration {
-	@Value("${broadworks.wsdl.location}")
-	private String wsdlLocation;
+    @Value("${broadworks.wsdl.location}")
+    private String wsdlLocation;
 	
-	@Bean
-	public Jaxb2Marshaller wsdlMarshaller() {
-		Jaxb2Marshaller wsdlMarshaller = new Jaxb2Marshaller();
+    @Bean
+    public Jaxb2Marshaller wsdlMarshaller() {
+	Jaxb2Marshaller wsdlMarshaller = new Jaxb2Marshaller();
 
-		wsdlMarshaller.setClassesToBeBound(new Class[] { 
-				com.broadsoft.broadworks.webservice.ObjectFactory.class,
-				com.broadsoft.broadworks.webservice.ProcessOCIMessage.class,
-				com.broadsoft.broadworks.webservice.ProcessOCIMessageResponse.class });
+	wsdlMarshaller.setClassesToBeBound(new Class[] { 
+		com.broadsoft.broadworks.webservice.ObjectFactory.class,
+		com.broadsoft.broadworks.webservice.ProcessOCIMessage.class,
+		com.broadsoft.broadworks.webservice.ProcessOCIMessageResponse.class });
 
-		wsdlMarshaller.setMarshallerProperties(new HashMap<String, Object>() {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
+	wsdlMarshaller.setMarshallerProperties(new HashMap<String, Object>() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-				{
-					put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-				}
-			});
+		{
+		    put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		}
+	    });
 
-		return wsdlMarshaller;
-	}
+	return wsdlMarshaller;
+    }
 	
     @Bean
     public WsdlClient soapConnector(Jaxb2Marshaller wsdlMarshaller) {
