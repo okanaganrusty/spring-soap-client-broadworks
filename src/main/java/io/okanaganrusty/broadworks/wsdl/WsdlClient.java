@@ -12,14 +12,13 @@ public class WsdlClient extends WebServiceGatewaySupport {
     private String wsdlLocation;
     
     public ProcessOCIMessageResponse getResponse(String xmlPayload) {
-	
 	ProcessOCIMessage request = new ProcessOCIMessage();
 	request.setIn0(xmlPayload);
-	
+		
 	ProcessOCIMessageResponse response = (ProcessOCIMessageResponse)
 	    getWebServiceTemplate()
-	    .marshalSendAndReceive(this.wsdlLocation, request, new SoapActionCallback(this.wsdlLocation));
-	
+	    .marshalSendAndReceive(wsdlLocation, request, new SoapActionCallback(wsdlLocation));
+				
 	return response;
     }
 }
