@@ -73,8 +73,7 @@ public class WsdlConfiguration {
 	    .build();
 	    
 	sslContext = new SSLContextBuilder()
-	    .loadTrustMaterial(
-			       null, 
+	    .loadTrustMaterial(null, 
 			       TrustAllStrategy.INSTANCE)
 	    .build();
 	    
@@ -88,10 +87,10 @@ public class WsdlConfiguration {
 	    .addInterceptorFirst(new HttpRequestInterceptor() {
 		    public void process(HttpRequest request, HttpContext context) {
 			System.out.println(">> Request URI: " + request.getRequestLine().getUri());
-							
+			
 			Header[] headers = request.getAllHeaders();
 			for (Header header : headers) { 
-			    System.out.println(">> Request Header [" + header.getName() + "]: " + header.getValue());			            	
+			    System.out.println(">> Request Header [" + header.getName() + "]: " + header.getValue());
 			}
 		    }     	    	
 		})
@@ -101,7 +100,7 @@ public class WsdlConfiguration {
 
 			Header[] headers = response.getAllHeaders();
 			for (Header header : headers) { 
-			    System.out.println("<< Response Header [" + header.getName() + "]: " + header.getValue());			            	
+			    System.out.println("<< Response Header [" + header.getName() + "]: " + header.getValue());
 			}			           			            
 		    }
 		})
