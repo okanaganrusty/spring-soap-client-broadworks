@@ -58,10 +58,7 @@ public class WsdlConfiguration {
 
   private CookieStore cookieStore;
 
-  public WsdlConfiguration() throws
-  KeyManagementException, 
-  NoSuchAlgorithmException, 
-  KeyStoreException {
+  public WsdlConfiguration() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 
     messageSender = new HttpComponentsMessageSender();
     cookieStore = new BasicCookieStore(); 
@@ -70,7 +67,7 @@ public class WsdlConfiguration {
         .setConnectTimeout(connectTimeout)
         .setConnectionRequestTimeout(requestTimeout)
         .setSocketTimeout(socketTimeout)
-        .setCookieSpec(CookieSpecs.STANDARD_STRICT)	    
+        .setCookieSpec(CookieSpecs.DEFAULT)	 
         .build();
 
     sslContext = new SSLContextBuilder()
@@ -83,9 +80,9 @@ public class WsdlConfiguration {
         .setDefaultCookieStore(cookieStore)
         .setDefaultRequestConfig(requestConfiguration)
         .setSSLContext(sslContext) 		
-        .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE) 
-        .addInterceptorFirst(new ContentLengthHeaderRemover())
-        .addInterceptorFirst(new HttpRequestInterceptor() {
+        .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)     
+        .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
+        .addInterceptorLast(new HttpRequestInterceptor() {
           public void process(HttpRequest request, HttpContext context) {
             logger.debug(">> Request URI: " + request.getRequestLine().getUri());
 
@@ -96,7 +93,7 @@ public class WsdlConfiguration {
             }
           }     	    	
         })
-        .addInterceptorFirst(new HttpResponseInterceptor() {
+        .addInterceptorLast(new HttpResponseInterceptor() {
           public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
             logger.debug("<< Response: " + response.getStatusLine());
 
@@ -110,12 +107,14 @@ public class WsdlConfiguration {
         .build();		
   }
 
+  /*
   private static class ContentLengthHeaderRemover implements HttpRequestInterceptor {
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
       request.removeHeaders(HTTP.CONTENT_LEN);
     }
   }
-
+  */
+  
   @Bean
   public Jaxb2Marshaller wsdlMarshaller() {
     Jaxb2Marshaller wsdlMarshaller = new Jaxb2Marshaller();
@@ -128,7 +127,7 @@ public class WsdlConfiguration {
 
     wsdlMarshaller.setMarshallerProperties(new HashMap<String, Object>() {
       /**
-       * 
+       * Format the output
        */
       private static final long serialVersionUID = 1L;
 
